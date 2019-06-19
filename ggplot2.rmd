@@ -13,21 +13,89 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## R Markdown
+```{ohi_data <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/OHI_global_data.csv")}
+``` 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r start ggplot}
+ggplot(data = ohi_data, aes(x = georegion_one, y = OHI_score)) + 
+  geom_point()
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+ggplot(data = ohi_data, aes(x = georegion_one, y =OHI_score)) + 
+  geom_jitter(width=0.2)
 
-```{r cars}
-summary(cars)
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+boxplot 
+```{}
+ggplot(data=ohi_data, aes (x=georegion_one)) +
+  geom_bar()
 ```
+histogram 
+```{}
+ggplot(data=ohi_data, aes (x=HDI)) +
+  geom_histogram()
+```
+multiple geoms exploration 
+```{}
+ohi_summary <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/OHI_scores_georegion_summary.csv")
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+ohi_summary
+```
+you need the identity here for the value of the y axis 
+```{}
+ggplot(data = ohi_summary, aes(x = georegions, y = OHI_score_average)) + 
+  geom_bar(stat="identity") + 
+  geom_jitter(data=ohi_data, aes(x=georegion_one, y=OHI_score))
+
+``` 
+trying to see if these are different 
+```{}
+ggplot(data = ohi_data, aes(y=OHI_score, x = HDI, color=georegion_one)) +
+  geom_point()
+``` 
+versus 
+```{}
+ggplot(data = ohi_data) +
+  geom_point(aes(y = OHI_score, x = HDI, color=georegion_one))
+``` 
+they are indeed the same result 
+typically if you have a lot of layers its better to add asthetics in the geom rahter than in the ggplot because you can get confused with the local and global layers, you can also work on the nuances layers better in the geompoint because you can choose more here. 
+
+asthetics: 
+you can assign your x and y axis to vairables in your dataset, but can do heaps more 
+
+
+changing the point size: 
+```{}
+ggplot(data = ohi_data, aes(x = OHI_score, y = HDI, size = coastal_pop)) + 
+  geom_point()
+  
+  ggplot(data = ohi_data, aes(x = OHI_score, y = HDI, color = coastal_pop)) + 
+  geom_point()
+  
+
+```
+Themes: 
+```{}
+ggplot(data = ohi_data, aes(x = OHI_score, y = HDI)) + 
+geom_point() + 
+theme_bw()
+``` 
+  
+```{}
+source('https://raw.githubusercontent.com/OHI-Science/ohiprep/master/src/R/scatterTheme.txt')       
+
+ggplot(data = ohi_data, aes(x = OHI_score, y = HDI)) + 
+  geom_point() + 
+  scatterTheme
+``` 
+
+```{}
+install.packages("RColorBrewer")
+library(RColorBrewer)
+display.brewer.all()
+
+ggplot(data = ohi_data, aes(x = OHI_score, y = OHI_trend, color= HDI)) + 
+geom_point(size = 3) + 
+scale_color_gradientn(colors = c("blue", "red"))
+
+``` 
